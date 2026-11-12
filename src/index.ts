@@ -1,17 +1,31 @@
-import './styles.css';
-import logo from './assets/logo.png';
+import "./login/loginPage.css";
+import loginPageHtml from "./login/LoginPage.html?raw";
+import { firebaseSignIn } from "../firebase/AuthService";
 
-function greet(name: string): void {
-  const heading = document.createElement('h1');
-  heading.textContent = `Hello, ${name}!`;
-  document.body.appendChild(heading);
+const app = document.querySelector<HTMLDivElement>("#app")!;
+app.innerHTML = loginPageHtml;
 
-  const img = document.createElement('img');
-  img.src = logo;
-  img.alt = 'Project Logo';
-  img.style.width = '200px';
+const form = document.getElementById("login-form") as HTMLFormElement;
+const emailInput = document.getElementById("email") as HTMLInputElement;
+const passwordInput = document.getElementById("password") as HTMLInputElement;
+const message = document.getElementById("form-message") as HTMLParagraphElement;
 
-  document.body.appendChild(img);
-}
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  message.textContent = "";
 
-greet('TypeScript + Vite');
+  try {
+    const result = await firebaseSignIn({
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+    });
+
+    console.log("Signed in successfully", result.user.email);
+    message.textContent = "Signed in successfully";
+    message.className = "form-message form-message--success";
+  } catch (err) {
+    console.error("Sign-in failed:", (err as { code?: string }).code);
+    message.textContent = "Incorrect email or password.";
+    message.className = "form-message form-message--error";
+  }
+});

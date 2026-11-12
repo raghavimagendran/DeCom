@@ -32,5 +32,10 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "firebase": "^13.2.0",
+    "tailwindcss": "^4.3.5"
   }
 }
