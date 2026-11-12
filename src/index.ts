@@ -1,4 +1,4 @@
-import "./login/loginPage.css";
+import "./styles.css";
 import loginPageHtml from "./login/LoginPage.html?raw";
 import signUpPageHtml from "./signup/SignUp.html?raw";
 import { firebaseSignIn, firebaseSignUp } from "../firebase/AuthService";
@@ -14,7 +14,7 @@ function getEl<T extends HTMLElement>(id: string): T {
  
 function showMessage(el: HTMLElement, text: string, kind: "error" | "success") {
   el.textContent = text;
-  el.className = `form-message form-message--${kind}`;
+  el.className = `mt-4 ${kind === "error" ? "text-red-600" : "text-emerald-600"}`;
 }
  
 function friendlyError(code: string): string {
