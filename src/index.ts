@@ -1,17 +1,78 @@
-import './styles.css';
-import logo from './assets/logo.png';
+import "./styles.css";
+import loginPageHtml from "./login/LoginPage.html?raw";
+import signUpPageHtml from "./signup/SignUp.html?raw";
+import { firebaseSignIn, firebaseSignUp } from "../firebase/AuthService";
 
-function greet(name: string): void {
-  const heading = document.createElement('h1');
-  heading.textContent = `Hello, ${name}!`;
-  document.body.appendChild(heading);
+const app = document.querySelector("#app") as HTMLDivElement;
 
-  const img = document.createElement('img');
-  img.src = logo;
-  img.alt = 'Project Logo';
-  img.style.width = '200px';
+function showLogin() {
+  app.innerHTML = loginPageHtml;
 
-  document.body.appendChild(img);
+  const form = document.getElementById("login-form") as HTMLFormElement;
+  const email = document.getElementById("email") as HTMLInputElement;
+  const password = document.getElementById("password") as HTMLInputElement;
+  const message = document.getElementById("form-message") as HTMLParagraphElement;
+  const goSignup = document.getElementById("go-signup") as HTMLAnchorElement;
+
+  goSignup.addEventListener("click", (e) => {
+    e.preventDefault();
+    showSignUp();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    message.textContent = "";
+
+    try {
+      await firebaseSignIn({ email: email.value, password: password.value });
+      message.textContent = "Signed in successfully";
+      message.className = "mt-4 text-emerald-600";
+    } catch {
+      message.textContent = "Incorrect email or password.";
+      message.className = "mt-4 text-red-600";
+    }
+  });
 }
 
-greet('TypeScript + Vite');
+function showSignUp() {
+  app.innerHTML = signUpPageHtml;
+
+  const form = document.getElementById("signup-form") as HTMLFormElement;
+  const name = document.getElementById("name") as HTMLInputElement;
+  const email = document.getElementById("email") as HTMLInputElement;
+  const password = document.getElementById("password") as HTMLInputElement;
+  const confirm = document.getElementById("confirm-password") as HTMLInputElement;
+  const message = document.getElementById("form-message") as HTMLParagraphElement;
+  const goLogin = document.getElementById("go-login") as HTMLAnchorElement;
+
+  goLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    showLogin();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    message.textContent = "";
+
+    if (password.value !== confirm.value) {
+      message.textContent = "Passwords do not match.";
+      message.className = "mt-4 text-red-600";
+      return;
+    }
+
+    try {
+      await firebaseSignUp({
+        email: email.value,
+        password: password.value,
+        displayName: name.value,
+      });
+      message.textContent = "Signed up successfully";
+      message.className = "mt-4 text-emerald-600";
+    } catch {
+      message.textContent = "Could not sign up. Please try again.";
+      message.className = "mt-4 text-red-600";
+    }
+  });
+}
+
+showLogin();
