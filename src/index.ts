@@ -54,20 +54,13 @@ function renderLogin() {
     button.disabled = true;
  
     try {
-      console.log("1. submitting");
       const result = await firebaseSignIn({
         email: emailInput.value.trim(),
         password: passwordInput.value,
       });
-      console.log("2. auth account created", result.user.uid);
-      showMessage(message, "Signed up successfully", "success");
-      console.log("3. profile saved");
-
-
-showMessage(message, "Signed up successfully", "success");
+      showMessage(message, "Signed in successfully", "success");
     } catch (err) {
       const code = (err as { code?: string }).code ?? "";
-      console.error("Sign-in failed:", code);
       showMessage(message, friendlyError(code), "error");
     } finally {
       button.disabled = false;
@@ -94,7 +87,6 @@ function renderSignUp() {
  
   form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  console.log("A. signup submit fired");
   message.textContent = "";
 
   if (passwordInput.value !== confirmInput.value) {
@@ -112,20 +104,12 @@ function renderSignUp() {
       password: passwordInput.value,
       displayName: name,
     });
-    console.log("B. auth account created:", result.user.uid);
 
     await saveUserProfile(result.user.uid, { name, email });
-    console.log("C. profile saved");
 
-    showMessage(message, "Signed up successfully", "success");
-    console.log("D. message shown", {
-    connected: message.isConnected,
-    text: message.textContent,
-    matches: document.querySelectorAll("#form-message").length,
-});
+    showMessage(message, "Signed up successfully", "success");;
   } catch (err) {
     const code = (err as { code?: string }).code ?? "";
-    console.error("Sign-up failed:", err);
     showMessage(message, friendlyError(code), "error");
   } finally {
     button.disabled = false;
